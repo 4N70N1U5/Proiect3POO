@@ -1,12 +1,13 @@
 #ifndef AgentieImobiliara_H
 #define AgentieImobiliara_H
 
+#include "Repository.h"
 #include "Locuinta.h"
 
 #include <iostream>
 #include <vector>
 
-class AgentieImobiliara
+class AgentieImobiliara: public Repository<Locuinta>
 {
 public:
     AgentieImobiliara();
@@ -25,7 +26,7 @@ public:
     void StergereLocuinta();
     void CalculChirie();
 private:
-    std::vector<Locuinta*> locuinte;
+    // std::vector<Locuinta*> locuinte;
 };
 
 std::istream& operator>>(std::istream&, AgentieImobiliara&);

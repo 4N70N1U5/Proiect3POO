@@ -2,6 +2,7 @@
 #include "../include/Locuinta.h"
 #include "../include/Apartament.h"
 #include "../include/Casa.h"
+#include "../include/LocuintaFactory.h"
 
 #include <iostream>
 #include <string>
@@ -14,30 +15,36 @@ AgentieImobiliara::AgentieImobiliara()
     // Initial am adaugat cateva locuinte in agentia imobiliara folosind constructorul pentru
     // a-mi fi mai usor sa testez, dar am decis sa le pastrez si in varianta finala.
     // De aceea, exista deja aceste patru locuinte in agentie inca de la inceput.
-    this->locuinte.push_back(new Apartament("Carmen", 90, 10, 1));
-    this->locuinte.push_back(new Apartament("Daniel", 70, 5, 3));
-    this->locuinte.push_back(new Casa("Sebi", 300, 10, 150));
-    this->locuinte.push_back(new Casa("Lidia", 350, 15, 200));
+    
+    // this->elemente.push_back(new Apartament("Carmen", 90, 10, 1));
+    // this->elemente.push_back(new Apartament("Daniel", 70, 5, 3));
+    // this->elemente.push_back(new Casa("Sebi", 300, 10, 150));
+    // this->elemente.push_back(new Casa("Lidia", 350, 15, 200));
+
+    this->elemente.push_back(LocuintaFactory::ConstruiesteLocuinta("Apartament", "Carmen", 90, 10, 1));
+    this->elemente.push_back(LocuintaFactory::ConstruiesteLocuinta("Apartament", "Daniel", 70, 5, 3));
+    this->elemente.push_back(LocuintaFactory::ConstruiesteLocuinta("Casa", "Sebi", 300, 10, 150));
+    this->elemente.push_back(LocuintaFactory::ConstruiesteLocuinta("Casa", "Lidia", 350, 15, 200));
 }
 
 AgentieImobiliara::AgentieImobiliara(std::vector<Locuinta*> locuinte)
 {
-    this->locuinte = locuinte;
+    this->elemente = locuinte;
 }
 
 AgentieImobiliara::AgentieImobiliara(const AgentieImobiliara& AI)
 {
-    this->locuinte = AI.locuinte;
+    this->elemente = AI.elemente;
 }
 
 AgentieImobiliara::~AgentieImobiliara()
 {
-    this->locuinte.clear();
+    this->elemente.clear();
 }
 
 void AgentieImobiliara::operator=(const AgentieImobiliara& AI)
 {
-    this->locuinte = AI.locuinte;
+    this->elemente = AI.elemente;
 }
 
 std::istream& operator>>(std::istream& i, AgentieImobiliara& AI)
@@ -53,19 +60,21 @@ std::istream& operator>>(std::istream& i, AgentieImobiliara& AI)
 
         cout << '\n';
         
-        if (tip == "apartament")
+        if (tip == "apartament" || tip == "a")
         {
             cout << "A fost selectat apartament.\n\n";
-            Apartament* A = new Apartament();
+            // Apartament* A = new Apartament();
+            Apartament* A = dynamic_cast<Apartament*>(LocuintaFactory::ConstruiesteLocuinta("Apartament"));
             i >> *A;
-            AI.locuinte.push_back(A);
+            AI.elemente.push_back(A);
         }
-        else if (tip == "casa")
+        else if (tip == "casa" || tip == "c")
         {
             cout << "A fost selectata casa.\n\n";
-            Casa* C = new Casa();
+            // Casa* C = new Casa();
+            Casa* C = dynamic_cast<Casa*>(LocuintaFactory::ConstruiesteLocuinta("Casa"));
             i >> *C;
-            AI.locuinte.push_back(C);
+            AI.elemente.push_back(C);
         }
         else
         {
@@ -83,17 +92,17 @@ std::istream& operator>>(std::istream& i, AgentieImobiliara& AI)
 
 std::ostream& operator<<(std::ostream& o, const AgentieImobiliara& AI)
 {
-    for (int i = 0; i < AI.locuinte.size(); i++)
+    for (int i = 0; i < AI.elemente.size(); i++)
     {
         o << "Locuinta " << i + 1 << ":\n";
-        if (dynamic_cast<Apartament*>(AI.locuinte[i]))
+        if (dynamic_cast<Apartament*>(AI.elemente[i]))
         {
-            Apartament* A = dynamic_cast<Apartament*>(AI.locuinte[i]);
+            Apartament* A = dynamic_cast<Apartament*>(AI.elemente[i]);
             o << *A << '\n';
         }
-        else if (dynamic_cast<Casa*>(AI.locuinte[i]))
+        else if (dynamic_cast<Casa*>(AI.elemente[i]))
         {
-            Casa* C = dynamic_cast<Casa*>(AI.locuinte[i]);
+            Casa* C = dynamic_cast<Casa*>(AI.elemente[i]);
             o << *C << '\n';
         }
     }
@@ -105,9 +114,9 @@ void AgentieImobiliara::AfisareApartamente()
 {
     int indice = 1;
 
-    for (int i = 0; i < this->locuinte.size(); i++)
+    for (int i = 0; i < this->elemente.size(); i++)
     {
-        Apartament* A = dynamic_cast<Apartament*>(this->locuinte[i]);
+        Apartament* A = dynamic_cast<Apartament*>(this->elemente[i]);
         if (A != NULL)
         {
             std::cout << "Apartamentul " << indice << ":\n";
@@ -121,9 +130,9 @@ void AgentieImobiliara::AfisareCase()
 {
     int indice = 1;
 
-    for (int i = 0; i < this->locuinte.size(); i++)
+    for (int i = 0; i < this->elemente.size(); i++)
     {
-        Casa* C = dynamic_cast<Casa*>(this->locuinte[i]);
+        Casa* C = dynamic_cast<Casa*>(this->elemente[i]);
         if (C != NULL)
         {
             std::cout << "Casa " << indice << ":\n";
@@ -149,28 +158,28 @@ void AgentieImobiliara::ModificareLocuinta()
 
     try
     {
-        this->locuinte.at(i); 
+        this->elemente.at(i); 
         // Pentru a arunca exceptia de tip out_of_range in caz ca indicele citit nu este ok.
 
-        if (dynamic_cast<Apartament*>(this->locuinte[i]))
+        if (dynamic_cast<Apartament*>(this->elemente[i]))
         {
             std::cout << "Modifici apartamentul de pe pozitia " << i + 1 << ".\n\n";
 
             Apartament A;
             std::cin >> A;
 
-            Apartament* aux = dynamic_cast<Apartament*>(this->locuinte[i]);
+            Apartament* aux = dynamic_cast<Apartament*>(this->elemente[i]);
 
             *aux = A;
         }
-        else if (dynamic_cast<Casa*>(this->locuinte[i]))
+        else if (dynamic_cast<Casa*>(this->elemente[i]))
         {
             std::cout << "Modifici casa de pe pozitia " << i + 1 << ".\n\n";
 
             Casa C;
             std::cin >> C;
 
-            Casa* aux = dynamic_cast<Casa*>(this->locuinte[i]);
+            Casa* aux = dynamic_cast<Casa*>(this->elemente[i]);
 
             *aux = C;
         }
@@ -200,8 +209,8 @@ void AgentieImobiliara::StergereLocuinta()
 
     try
     {
-        this->locuinte.at(i);
-        this->locuinte.erase(this->locuinte.begin() + i);
+        this->elemente.at(i);
+        this->elemente.erase(this->elemente.begin() + i);
 
         std::cout << "Locuinta a fost stearsa.\n";
     }
@@ -227,7 +236,7 @@ void AgentieImobiliara::CalculChirie()
 
     try
     {
-        this->locuinte.at(i);
+        this->elemente.at(i);
     }
     catch(const std::out_of_range& err)
     {
@@ -260,15 +269,15 @@ void AgentieImobiliara::CalculChirie()
         goto CitireDiscount;
     }
 
-    if (dynamic_cast<Apartament*>(this->locuinte[i]))
+    if (dynamic_cast<Apartament*>(this->elemente[i]))
     {
-        Apartament* A = dynamic_cast<Apartament*>(this->locuinte[i]);
+        Apartament* A = dynamic_cast<Apartament*>(this->elemente[i]);
 
         std::cout << "Chiria pentru apartamentul de pe pozitia " << i + 1 << ": " << A->CalculChirie(aplicareDiscount) << '\n';
     }
-    else if (dynamic_cast<Casa*>(this->locuinte[i]))
+    else if (dynamic_cast<Casa*>(this->elemente[i]))
     {
-        Casa* C = dynamic_cast<Casa*>(this->locuinte[i]);
+        Casa* C = dynamic_cast<Casa*>(this->elemente[i]);
 
         std::cout << "Chiria pentru casa de pe pozitia " << i + 1 << ": " << C->CalculChirie(aplicareDiscount) << '\n';
     }
