@@ -1,4 +1,6 @@
-# Proiect2POO
+# Proiect3POO
+
+Proiectul 3 se bazeaza pe proiectul 2.
 
 Acest program permite memorarea, afisarea, modificarea si stergerea unor locuinte dintr-o agentie imobiliara, cat si calculul chiriei lunare pentru acestea. Acest lucru este implementat cu ajutorul a patru clase, ```Locuinta```, ```Apartament```, ```Casa``` si ```AgentieImobiliara```.
 
@@ -9,3 +11,13 @@ Clasa ```AgentieImobiliara``` permite memorarea acestor locuinte intr-un vector 
 Toate aceste optiuni pot fi accesate cu ajutorul unui meniu interactiv.
 
 Fisiere sursa ```.cpp```, inclusiv ```main.cpp```, se gasesc in folderul ```src```, in timp ce fisierele header ```.h``` se afla in folderul ```include```.
+
+## !! NOU
+
+In plus, proiectul 3 contine doua *design pattern-uri* si un *template*.
+
+Clasa ```Repository``` reprezinta primul design pattern implementat, si este implementata folosind template. Clasa ```AgentieImobiliara``` nu mai contine acum vectorul de pointeri ca atribut, ci mosteneste clasa ```Repository``` care contine vectorul de pointeri, al caror tip depinde de ce template primeste.
+
+Clasa ```LocuintaFactory``` reprezinta al doilea design pattern implementat, si are o functie membra statica supraincarcata de 2 ori care returneaza un pointer catre unul dintre tipurile de locuinte. Folosesc aceasta functie in cadrul metodelor clasei ```AgentieImobiliara```, acolo unde adaug locuinte in vector, in loc sa ma folosesc direct de *new*, ca pana acum.
+
+Schimbarile fata de proiectul 2 se gasesc in fisierele header si sursa ale celor doua clase noi, si in cele ale clasei ```AgentieImobiliara```.
