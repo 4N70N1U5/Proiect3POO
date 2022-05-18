@@ -1,3 +1,4 @@
+#include "../include/Repository.h"
 #include "../include/AgentieImobiliara.h"
 #include "../include/Locuinta.h"
 #include "../include/Apartament.h"
@@ -21,10 +22,15 @@ AgentieImobiliara::AgentieImobiliara()
     // this->elemente.push_back(new Casa("Sebi", 300, 10, 150));
     // this->elemente.push_back(new Casa("Lidia", 350, 15, 200));
 
-    this->elemente.push_back(LocuintaFactory::ConstruiesteLocuinta("Apartament", "Carmen", 90, 10, 1));
-    this->elemente.push_back(LocuintaFactory::ConstruiesteLocuinta("Apartament", "Daniel", 70, 5, 3));
-    this->elemente.push_back(LocuintaFactory::ConstruiesteLocuinta("Casa", "Sebi", 300, 10, 150));
-    this->elemente.push_back(LocuintaFactory::ConstruiesteLocuinta("Casa", "Lidia", 350, 15, 200));
+    // this->elemente.push_back(LocuintaFactory::ConstruiesteLocuinta("Apartament", "Carmen", 90, 10, 1));
+    // this->elemente.push_back(LocuintaFactory::ConstruiesteLocuinta("Apartament", "Daniel", 70, 5, 3));
+    // this->elemente.push_back(LocuintaFactory::ConstruiesteLocuinta("Casa", "Sebi", 300, 10, 150));
+    // this->elemente.push_back(LocuintaFactory::ConstruiesteLocuinta("Casa", "Lidia", 350, 15, 200));
+
+    this->AdaugaElement(LocuintaFactory::ConstruiesteLocuinta("Apartament", "Carmen", 90, 10, 1));
+    this->AdaugaElement(LocuintaFactory::ConstruiesteLocuinta("Apartament", "Daniel", 70, 5, 3));
+    this->AdaugaElement(LocuintaFactory::ConstruiesteLocuinta("Casa", "Sebi", 300, 10, 150));
+    this->AdaugaElement(LocuintaFactory::ConstruiesteLocuinta("Casa", "Lidia", 350, 15, 200));
 }
 
 AgentieImobiliara::AgentieImobiliara(std::vector<Locuinta*> locuinte)
@@ -66,7 +72,8 @@ std::istream& operator>>(std::istream& i, AgentieImobiliara& AI)
             // Apartament* A = new Apartament();
             Apartament* A = dynamic_cast<Apartament*>(LocuintaFactory::ConstruiesteLocuinta("Apartament"));
             i >> *A;
-            AI.elemente.push_back(A);
+            // AI.elemente.push_back(A);
+            AI.AdaugaElement(A);
         }
         else if (tip == "casa" || tip == "c")
         {
@@ -74,7 +81,8 @@ std::istream& operator>>(std::istream& i, AgentieImobiliara& AI)
             // Casa* C = new Casa();
             Casa* C = dynamic_cast<Casa*>(LocuintaFactory::ConstruiesteLocuinta("Casa"));
             i >> *C;
-            AI.elemente.push_back(C);
+            // AI.elemente.push_back(C);
+            AI.AdaugaElement(C);
         }
         else
         {
@@ -210,7 +218,9 @@ void AgentieImobiliara::StergereLocuinta()
     try
     {
         this->elemente.at(i);
-        this->elemente.erase(this->elemente.begin() + i);
+        // this->elemente.erase(this->elemente.begin() + i);
+        this->StergeElement(i);
+
 
         std::cout << "Locuinta a fost stearsa.\n";
     }
